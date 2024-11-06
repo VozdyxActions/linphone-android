@@ -151,7 +151,7 @@ class CurrentCallViewModel @UiThread constructor() : GenericViewModel() {
         MutableLiveData<Event<Boolean>>()
     }
 
-    val proximitySensorEnabled = MutableLiveData<Boolean>()
+    val tySensorEnabled = MutableLiveData<Boolean>()
 
     // To synchronize chronometers in UI
     val callDuration = MutableLiveData<Int>()
@@ -432,7 +432,7 @@ class CurrentCallViewModel @UiThread constructor() : GenericViewModel() {
                 waitingForEncryptionInfo.postValue(false)
             }
 
-            updateProximitySensor()
+            updatetySensor()
         }
 
         @WorkerThread
@@ -478,21 +478,23 @@ class CurrentCallViewModel @UiThread constructor() : GenericViewModel() {
     }
 
     @WorkerThread
-    private fun updateProximitySensor() {
+    private fun updatetySensor() {
         if (::currentCall.isInitialized) {
             val callState = currentCall.state
             if (LinphoneUtils.isCallIncoming(callState)) {
-                proximitySensorEnabled.postValue(false)
+                tySensorEnabled.postValue(false)
             } else if (LinphoneUtils.isCallOutgoing(callState)) {
                 val videoEnabled = currentCall.params.isVideoEnabled
-                proximitySensorEnabled.postValue(!videoEnabled)
+                // proximitySensorEnabled.postValue(!videoEnabled)
+                proximitySensorEnabled.postValue(false)
             } else {
                 if (isSendingVideo.value == true || isReceivingVideo.value == true) {
                     proximitySensorEnabled.postValue(false)
                 } else {
                     val outputAudioDevice = currentCall.outputAudioDevice ?: coreContext.core.outputAudioDevice
                     if (outputAudioDevice != null && outputAudioDevice.type == AudioDevice.Type.Earpiece) {
-                        proximitySensorEnabled.postValue(true)
+                        // proximitySensorEnabled.postValue(true)
+                        proximitySensorEnabled.postValue(false)
                     } else {
                         proximitySensorEnabled.postValue(false)
                     }
